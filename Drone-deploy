@@ -1,0 +1,44 @@
+import random
+import math
+random.seed(1)  # Setting random number generator seed for repeatability
+
+NUM_DRONES = 10000
+AIRSPACE_SIZE = 128000 # 128 km
+CONFLICT_RADIUS = 500  # Meters.
+
+
+conflict_count = []
+
+def count_conflicts(drones, conflict_radius):
+
+    #getting the number of drones
+    d_len = len(drones)
+    #calling each drone, to check if it is conflict with any other drone
+    for i in range (d_len):
+        x1 = drones[i][0]
+        y1 = drones[i][1]
+        #comparing the called drone postion with all other drone positions
+        for j in range (d_len):
+            if(i!=j):
+                x2 = drones[j][0]
+                y2 = drones[j][1]
+                dist = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+                #checking if the they are conflicted or not
+                if dist < 500:
+                    #avoiding duplication of values in the list
+                    if i not in conflict_count:
+                        conflict_count.append(i)
+                    if j not in conflict_count:
+                        conflict_count.append(j)
+
+    #print(sorted(conflict_count))
+    #return the number of conflicted drones (number of items in conflict_count)
+    return len(conflict_count)
+
+def gen_coord():
+    return int(random.random() * AIRSPACE_SIZE)
+
+positions = [[gen_coord(), gen_coord()]for i in range(NUM_DRONES)]
+#print(positions)
+conflicts = count_conflicts(positions, CONFLICT_RADIUS)
+print("Drones in conflict: {}".format(conflicts))
